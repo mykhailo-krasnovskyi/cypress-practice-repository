@@ -114,7 +114,7 @@ describe('Actions', () => {
 
     it.only('custom commands', () => {
         cy.visit('/');
-        const randomEmail = `michael.krasnovskyi+testUser1+${Date.now()}@gmail.com`
+        const randomEmail = `michael.krasnovskyi+${Date.now()}@gmail.com`
         cy.login(randomEmail, 'ZSgeVQhuU3qkvlG');
 
     })
