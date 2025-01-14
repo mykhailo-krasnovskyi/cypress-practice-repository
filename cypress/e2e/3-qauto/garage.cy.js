@@ -1,4 +1,7 @@
 /// <reference types="cypress" />
+import SignInForm from "../../page-objects/forms/SignInForm";
+import HomePage from "../../page-objects/pages/HomePage";
+import GaragePage from "../../page-objects/pages/GaragePage";
 
 describe('Garage', () => {
     const selectors = {
@@ -47,7 +50,7 @@ describe('Garage', () => {
         cy.get(selectors.addedCars).eq(0).find('.car_name').should('have.text', 'Porsche Panamera');
     });
 
-    it.only('Add [Ford] [Focus]', () => {
+    it('Add [Ford] [Focus]', () => {
 
         cy.get(selectors.addNewCarButton).click();
         cy.get(selectors.brandDropdown).select('Ford');
@@ -70,12 +73,51 @@ describe('Garage', () => {
     });
 
     after(() => {
-        cy.get(selectors.addedCars).each((car) => { 
+        cy.get(selectors.addedCars).each((car) => {
             cy.wrap(car).find('.icon-edit').click();
             cy.contains('Remove car').click();
             cy.get('.btn-danger').click();
 
         })
+    })
+
+
+})
+
+
+describe.only('Garage with POM', () => {
+
+    beforeEach(() => {
+       GaragePage.openPageAsLoggedUser();
+    })
+
+    it.only('Add [BMW] [X5]', () => {
+        GaragePage.addNewCarByBrandAndModel('BMW', 'X5')
+        GaragePage.verifyLastAddedCarByName('BMW X5');
+    });
+
+    it('Add [Audi] [TT]', () => {
+        GaragePage.addNewCarByBrandAndModel('Audi', 'TT')
+        GaragePage.verifyLastAddedCarByName('Audi TT');
+    });
+
+    it('Add [Porsche] [Panamera]', () => {
+        GaragePage.addNewCarByBrandAndModel('Porsche', 'Panamera')
+        GaragePage.verifyLastAddedCarByName('Porsche Panamera');
+    });
+
+    it('Add [Ford] [Focus]', () => {
+        GaragePage.addNewCarByBrandAndModel('Ford', 'Focus')
+        GaragePage.verifyLastAddedCarByName('Ford Focus');
+    });
+
+    it('Add [Fiat] [Panda]', () => {
+        GaragePage.addNewCarByBrandAndModel('Fiat', 'Panda')
+        GaragePage.verifyLastAddedCarByName('Fiat Panda');
+    });
+
+    after(() => {
+       GaragePage.removeAllCars();
     })
 
 

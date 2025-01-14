@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
+import HomePage from "../../page-objects/pages/HomePage";
+import SignInForm from "../../page-objects/forms/SignInForm";
 
-describe('Search', () => {
+describe('Login without POM', () => {
     const selectors = {
         emailField: '#signinEmail',
         passwordField: '#signinPassword',
@@ -46,6 +48,44 @@ describe('Search', () => {
         cy.get(selectors.emailField).type('fsafasfasfafs');
         cy.get(selectors.emailField).blur();
         cy.get(selectors.errorMessage).should('have.text', 'Email is incorrect');
+    });
+
+
+})
+
+describe.only('Login with POM', () => {
+    beforeEach(() => {
+        HomePage.openPage();
+        HomePage.openSignInForm();
+    })
+
+    it('Success Sign In', () => {
+        SignInForm.loginWithCredentials('michael.krasnovskyi+testUser1@gmail.com', 'ZSgeVQhuU3qkvlG')
+        cy.url().should('eq', 'https://qauto.forstudy.space/panel/garage');
+    });
+
+    it('Sign In with wrong data', () => {
+        SignInForm.loginWithCredentials('michael.krasnovskyi+testUser1@gmail.com', '531512512')
+        SignInForm.wrongDataMessage.should('be.visible');
+    });
+
+    it.only('Sign In with empty email', () => {
+        //SignInForm.triggerErrorMessageForField('email')
+        SignInForm.emailField.debug();
+        SignInForm.enterPassword('41241242')
+        SignInForm.errorMessage.should('have.text', 'Email required');
+    });
+
+    it('Sign In with empty password', () => {
+        SignInForm.triggerErrorMessageForField('password')
+        SignInForm.enterEmail('michael.krasnovskyi+testUser1@gmail.com');
+        SignInForm.errorMessage.should('have.text', 'Password required');
+    });
+
+    it('Sign In with incorrect email', () => {
+        SignInForm.enterEmail('fsafasfasfafs');
+        SignInForm.triggerErrorMessageForField('email')
+        SignInForm.errorMessage.should('have.text', 'Email is incorrect');
     });
 
 
